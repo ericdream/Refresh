@@ -7,8 +7,19 @@
 //
 
 #import "RefreshHeadView.h"
-
+#import "AnimationView.h"
+@interface RefreshHeadView ()
+@property(nonatomic,strong) AnimationView *animationView;
+@end
 @implementation RefreshHeadView
+- (AnimationView *)animationView{
+    if(_animationView == nil){
+        _animationView = [[AnimationView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        _animationView.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, 20);
+        [self addSubview:_animationView];
+    }
+    return _animationView;
+}
 + (instancetype)initRefreshWithBlock:(CallBackComplete)callBack{
     RefreshHeadView *header = [[RefreshHeadView alloc] init];
     header.callBack = callBack;
@@ -19,6 +30,7 @@
     self.y = -RefreshHeaderHeight;
     self.heigth = RefreshHeaderHeight;
     self.width = [UIScreen mainScreen].bounds.size.width;
+     self.titleLb.hidden = YES;
 }
 - (void)observerGestureStateChanged:(NSDictionary *)changed{
     [super observerGestureStateChanged:changed];
@@ -36,32 +48,66 @@
         scrollView.contentInset= UIEdgeInsetsMake(self.heigth, 0, 0, 0);
         return;
     }
-    NSLog(@"%f",scrollView.contentOffset.y);
     CGFloat offset_y = -scrollView.contentOffset.y;
     //    CGFloat offsetPercent = offset_y/self.heigth;
     if(scrollView.isDragging){
         if(offset_y < self.heigth){
-            
+            self.refreshState = RefreshStatePulling;
         }else{
-            [ self beginRefresh];
-            scrollView.contentInset= UIEdgeInsetsMake(self.heigth, 0, 0, 0);
+            self.refreshState = RefreshStateWillRefresh;
+            
         }
     }else{
-        
+        if(self.refreshState == RefreshStateWillRefresh){
+            self.refreshState = RefreshStateRefreshing;
+        }
     }
     
 }
-- (void)beginRefresh{
-    self.titleLb.text = @"刷新中";
-    self.refreshState = RefreshStateRefreshing;
+- (void)startRefresh{
     if(self.callBack)self.callBack();
+}
+- (void)setRefreshState:(RefreshState)refreshState{
+    [super setRefreshState:refreshState];
+    self.animationView.hidden = YES;
+    if(refreshState == RefreshStatePulling){
+        [UIView animateWithDuration:0.2 animations:^{
+           self.titleLb.text = @"准备刷新";
+            self.titleLb.hidden = NO;
+        }];
+    
+    }else if (refreshState == RefreshStateWillRefresh){
+   
+        [UIView animateWithDuration:0.2 animations:^{
+             self.titleLb.text = @"松开刷新";
+            self.titleLb.hidden = NO;
+        }];
+    }else if (refreshState == RefreshStateRefreshing){
+         [ self startRefresh];
+        [UIView animateWithDuration:0.2 animations:^{
+            scrollView.contentInset= UIEdgeInsetsMake(self.heigth, 0, 0, 0);
+            [scrollView setContentOffset:CGPointMake(0, -RefreshHeaderHeight)];
+           self.titleLb.text = @"刷新中";
+            self.titleLb.hidden = YES;
+            self.animationView.hidden = NO;
+        }];
+    
+    }else{
+        self.titleLb.hidden = YES;
+        [UIView animateWithDuration:0.4 animations:^{
+            scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+        }];
+    }
+}
+- (void)beginRefresh{
+    self.refreshState = RefreshStateRefreshing;
 }
 - (UILabel *)titleLb{
     if(_titleLb == nil){
         _titleLb = [UILabel new];
         _titleLb.textColor = [UIColor colorWithWhite:0.6 alpha:1];
         _titleLb.frame = CGRectMake(0, 0, 100, self.heigth);
-        _titleLb.center = CGPointMake(100, 20);
+        _titleLb.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, 20);
         [self addSubview:_titleLb];
     }
     return _titleLb;

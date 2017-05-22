@@ -33,7 +33,7 @@
         });
     }];
     tableView1.headView = header;
-    
+    [tableView1.headView beginRefresh];
 }
 
 

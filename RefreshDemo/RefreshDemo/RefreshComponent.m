@@ -67,19 +67,13 @@ NSString *const kgesture = @"state";
 }
 - (void)endFooterRefresh{
     self.refreshState = RefreshStateFree;
-    [UIView animateWithDuration:0.4 animations:^{
-  scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    }];
+   
   
     
 }
 - (void)endHeaderRefresh{
     self.refreshState = RefreshStateFree;
-    
-    [UIView animateWithDuration:0.4 animations:^{
-        scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    }];
-    
+
 }
 - (void)dealloc{
     [self removeAllOberver];

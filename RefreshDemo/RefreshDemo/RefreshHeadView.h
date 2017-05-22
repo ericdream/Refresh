@@ -12,4 +12,5 @@ typedef void (^CallBackComplete)();
 @property(nonatomic,copy)CallBackComplete callBack;
 + (instancetype)initRefreshWithBlock:(CallBackComplete)callBack;
 @property(nonatomic,strong)UILabel *titleLb;
+- (void)beginRefresh;
 @end

@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface AnimationView : UIView
-
+- (void)stopAnimation;
+- (void)startAnimation;
 @end

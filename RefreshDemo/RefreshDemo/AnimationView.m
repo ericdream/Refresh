@@ -49,15 +49,22 @@
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         self.layer.cornerRadius = self.bounds.size.width/2.0f;
         self.layer.masksToBounds = true;
+        [self startAnimation];
     }
     return self;
+}
+- (void)stopAnimation{
+    [displayLink setPaused:YES];
+}
+- (void)startAnimation{
+    [displayLink setPaused:NO];
 }
 - (void)progressAction{
     if(preogress>=1){
         preogress = 0.0;
     }
     preogress += 0.002;
-    offset +=M_PI/self.bounds.size.width*6;
+    offset +=M_PI/self.bounds.size.width*2;
     [self setNeedsDisplay];
     //   shapLayer.strokeEnd = preogress;
 }
@@ -92,18 +99,18 @@
 //    [[UIColor redColor] setStroke];
 //    CGPathRelease(path);
     CGFloat height = self.bounds.size.height;
-    CGFloat offset_y = (1-preogress)*self.bounds.size.height;
+    CGFloat offset_y = (1-0.5)*self.bounds.size.height;
     CGFloat waterWave_w =  self.bounds.size.width;
     CGMutablePathRef pathRf1 = CGPathCreateMutable();
     CGMutablePathRef pathRf2 = CGPathCreateMutable();
     CGPathMoveToPoint(pathRf1, nil, 0, offset_y);
     CGPathMoveToPoint(pathRf2, nil, 0, offset_y);
     for (float x = 0.0; x<waterWave_w; x++) {
-        CGFloat y = 10*sin(M_PI/self.bounds.size.width*x+offset)+offset_y;
+        CGFloat y = 5*sin(M_PI/self.bounds.size.width*x+offset)+offset_y;
         CGPathAddLineToPoint(pathRf1, nil, x, y);
     }
     for (float x = 0.0; x<waterWave_w; x++) {
-        CGFloat y = 10*cos(M_PI/self.bounds.size.width*x+offset)+offset_y;
+        CGFloat y = 5*cos(M_PI/self.bounds.size.width*x+offset)+offset_y;
         CGPathAddLineToPoint(pathRf2, nil, x, y);
     }
     CGPathAddLineToPoint(pathRf1, nil, waterWave_w, self.bounds.size.height);

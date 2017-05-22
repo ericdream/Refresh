@@ -13,10 +13,10 @@ UIKIT_EXTERN const CGFloat RefreshHeaderHeight;
 UIKIT_EXTERN const CGFloat RefreshFooterHeight;
 
 typedef NS_ENUM(NSInteger,RefreshState) {
-    RefreshStateFree = 1,
-    RefreshStatePulling,
-    RefreshStateRefreshing,
-    RefreshStateWillRefresh,
+    RefreshStateFree = 1, // 刷新完成
+    RefreshStatePulling, // 准备刷新
+    RefreshStateRefreshing, // 正在刷新
+    RefreshStateWillRefresh, // 将要刷新
     RefreshStateNoMoreData
 };
 
